@@ -28,6 +28,8 @@ service TimeService {
 
   rpc Stream(stream TimeStreamRequest) returns (TimeUpdate); // clients streaming rpc client sunucuya birüsürü istek gönderir sunucu tek bir cevap döner
 
+  rpc Chat(stream TimeStreamRequest) returns (stream TimeUpdate); // bi-directional (bidi) streaming rpc client ve sunucu birbirlerine istek ve cevap gönderirler
+
 }
 
  
