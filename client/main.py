@@ -21,7 +21,8 @@ def run():
     stub = timeservice_pb2_grpc.TimeServiceStub(channel)
     # now(stub)
     seconds = 10
-    stream(stub,seconds) # buraya kaç saniye yazarsak o kadar döner
+    stream(stub,seconds) 
+
 if __name__ == '__main__':
     run()
 
