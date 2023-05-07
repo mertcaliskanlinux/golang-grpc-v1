@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-    | # | GO | LANG  | gRPc | | PROTOBUF | DEVELOPERS | # |
+    | # | PYTHON | | GO | LANG  | gRPc | | PROTOBUF | DEVELOPERS | # |
 </p>
 
 ![Resim Açıklaması](https://gophersource.com/img/inclusion.png)
