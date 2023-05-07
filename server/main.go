@@ -34,16 +34,14 @@ func (s *srv) Now(ctx context.Context, req *pb.TimeStreamRequest) (*pb.TimeUpdat
 	}}, nil
 }
 
-func (s *srv) Stream(req *pb.TimeStreamRequest, stream pb.Nowrequest) error {
+func (s *srv) Stream(req *pb.TimeStreamRequest, stream pb.TimeStreamRequest) error {
 
 	deadline := time.Now().Add(time.Duration(req.Length) * time.Second)
 
 	for !time.Now().After(deadline) {
 		time.Sleep(time.Millisecond * 300)
 
-		stream.Send(&pb.TimeUpdate{Time: &pb.Time{
-			Value: time.Now().String(),
-		}})
+		fmt.Println("ff")
 	}
 	return nil
 }

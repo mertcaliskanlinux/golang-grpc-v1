@@ -20,7 +20,6 @@ message TimeStreamRequest {
   int32 length = 1;
 }
 
-
 service TimeService {
   
   rpc Now(Nowrequest) returns (TimeUpdate); // unary rpc tek bir istek tek bir cevap
