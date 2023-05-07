@@ -1,10 +1,9 @@
-module github.com/mertcaliskanlnx/golang-grpc-v1/server
+module github.com/mertcaliskanlnx/golang-grpc-v1
 
 go 1.18
 
 require (
 	github.com/golang/protobuf v1.5.3
-	github.com/mertcaliskanlnx/golang-grpc-v1 v0.0.0-20230507023755-6c63eac0cfa2
 	google.golang.org/grpc v1.55.0
 )
 

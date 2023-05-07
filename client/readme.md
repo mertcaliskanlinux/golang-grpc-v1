@@ -1,0 +1,1 @@
+python3 -m grpc_tools.protoc -I . timeservice.proto --python_out=client/ --grpc_python_out=client/

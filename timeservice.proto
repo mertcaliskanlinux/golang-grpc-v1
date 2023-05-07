@@ -2,29 +2,27 @@ syntax = "proto3";
 
 option go_package = "pb";
 
-
-message Time {
-  string value = 1;
+message Time{
+    string value = 1;
 }
-
 
 message TimeUpdate {
-  Time time = 1;
+    Time time =  1;
 }
 
-
-message Nowrequest {}
+message NowRequest {}
 
 
 message TimeStreamRequest {
-  int32 length = 1;
+    int32 length = 1;
 }
 
 service TimeService {
-  
-  rpc Now(Nowrequest) returns (TimeUpdate); // unary rpc tek bir istek tek bir cevap
+    rpc Now(NowRequest) returns (TimeUpdate);
 
-  rpc Stream(TimeStreamRequest) returns (stream TimeUpdate); // server streaming rpc sunucu tek bir istek gönderir client birçok cevap döner
+    // asagidaki bir server stream ornegidir. http2 sayesinde tek bir tcp baglantisi uzerinden
+    // websocketlerde oldugu gibi defaatle veri gonderip alma islemi yapabiliyoruz.
+    // asagidaki stream TimeUpdate ifadesi, server'in TimeUpdate tipinde veri stream edecegini
+    // yani defaatle bu tipte bir veriyi donebilecegini belirtiyor.
+    rpc Stream(TimeStreamRequest) returns (stream TimeUpdate);
 }
-
- 
