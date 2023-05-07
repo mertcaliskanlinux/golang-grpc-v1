@@ -2,6 +2,7 @@ syntax = "proto3";
 
 option go_package = "pb";
 
+
 message Time {
   string value = 1;
 }
@@ -21,7 +22,12 @@ message TimeStreamRequest {
 
 
 service TimeService {
-  rpc Now(Nowrequest) returns (TimeUpdate); // unary rpc
-  rpc Stream(TimeStreamRequest) returns (stream TimeUpdate); // server streaming rpc
+  rpc Now(Nowrequest) returns (TimeUpdate); // unary rpc tek bir istek tek bir cevap
+
+  rpc Stream(TimeStreamRequest) returns (stream TimeUpdate); // server streaming rpc sunucu tek bir istek gönderir client birçok cevap döner
+
+  rpc Stream(stream TimeStreamRequest) returns (TimeUpdate); // clients streaming rpc client sunucuya birüsürü istek gönderir sunucu tek bir cevap döner
+
 }
 
+ 
