@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"time"
@@ -29,17 +30,26 @@ func main() {
 type srv struct{}
 
 func (s *srv) Now(ctx context.Context, req *pb.NowRequest) (*pb.TimeUpdate, error) {
+	fmt.Println("İSTEK GELDİ cevap gönderildi. NOW.")
 	return &pb.TimeUpdate{Time: &pb.Time{
 		Value: time.Now().String(),
 	}}, nil
 }
+
+//STRİNG SEND
+// func (s *srv) Now(ctx context.Context, req *pb.NowRequest) (*pb.TimeUpdate, error) {
+// 	fmt.Println("İSTEK GELDİ cevap gönderildi.")
+// 	return &pb.TimeUpdate{Time: &pb.Time{
+// 		Value: "Mert ÇALIŞKAN",
+// 	}}, nil
+// }
 
 func (s *srv) Stream(req *pb.TimeStreamRequest, stream pb.TimeService_StreamServer) error {
 	// bir deadline belirleyip sonuna kadar client'a veri gonderiyoruz (server stream)
 	deadline := time.Now().Add(time.Duration(req.Length) * time.Second)
 	for !time.Now().After(deadline) {
 		time.Sleep(time.Millisecond * 300)
-
+		fmt.Println("İSTEK GELDİ cevap gönderildi STREAM.")
 		stream.Send(&pb.TimeUpdate{Time: &pb.Time{
 			Value: time.Now().String(),
 		}})
