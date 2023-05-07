@@ -26,9 +26,6 @@ service TimeService {
   rpc Now(Nowrequest) returns (TimeUpdate); // unary rpc tek bir istek tek bir cevap
 
   rpc Stream(TimeStreamRequest) returns (stream TimeUpdate); // server streaming rpc sunucu tek bir istek gönderir client birçok cevap döner
-
-
-
 }
 
  

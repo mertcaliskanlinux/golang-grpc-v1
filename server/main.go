@@ -18,9 +18,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to listen on port 8080: %v", err)
 	}
-	server := grpc.NewServer()
 
-	pb.RegisterUserServiceServer(server, &srv{})
+	server := grpc.NewServer()
 
 	fmt.Println("GRPC - Server V1.0.0 is   running...")
 	err = server.Serve(lis)
@@ -29,20 +28,22 @@ func main() {
 
 type srv struct{}
 
-func (s *srv) Now(ctx context.Context, req *pb.NowRequest) (*pb.NowResponse, error) {
-	return &pb.TimeResponse{Time: &pb.Time{
+func (s *srv) Now(ctx context.Context, req *pb.TimeStreamRequest) (*pb.TimeUpdate, error) {
+	return &pb.TimeUpdate{Time: &pb.Time{
 		Value: time.Now().String(),
 	}}, nil
 }
 
-func (s *srv) Stream(req *pb.StreamRequest, stream pb.UserService_StreamServer) error {
-	deadline := time.Now().Add(time.Duration(req.Length()) * time.Second)
+func (s *srv) Stream(req *pb.TimeStreamRequest, stream pb.Nowrequest) error {
+
+	deadline := time.Now().Add(time.Duration(req.Length) * time.Second)
 
 	for !time.Now().After(deadline) {
-		stream.Send(&pb.TimeResponse{Time: &pb.Time{
+		time.Sleep(time.Millisecond * 300)
+
+		stream.Send(&pb.TimeUpdate{Time: &pb.Time{
 			Value: time.Now().String(),
 		}})
-		time.Sleep(1 * time.Second)
 	}
 	return nil
 }

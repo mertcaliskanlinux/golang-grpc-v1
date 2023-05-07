@@ -4,8 +4,12 @@
 package pb
 
 import (
+	context "context"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
+	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -194,4 +198,148 @@ var fileDescriptor_c24d50486e4ed4c3 = []byte{
 	0x09, 0xe9, 0x61, 0xd8, 0x82, 0xa2, 0xd4, 0x80, 0xd1, 0x89, 0x25, 0x8a, 0xa9, 0x20, 0x29, 0x89,
 	0x0d, 0xec, 0x57, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff, 0x8e, 0x7a, 0xdd, 0x51, 0x00, 0x01,
 	0x00, 0x00,
+}
+
+// Reference imports to suppress errors if they are not otherwise used.
+var _ context.Context
+var _ grpc.ClientConnInterface
+
+// This is a compile-time assertion to ensure that this generated file
+// is compatible with the grpc package it is being compiled against.
+const _ = grpc.SupportPackageIsVersion6
+
+// TimeServiceClient is the client API for TimeService service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
+type TimeServiceClient interface {
+	Now(ctx context.Context, in *Nowrequest, opts ...grpc.CallOption) (*TimeUpdate, error)
+	Stream(ctx context.Context, in *TimeStreamRequest, opts ...grpc.CallOption) (TimeService_StreamClient, error)
+}
+
+type timeServiceClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewTimeServiceClient(cc grpc.ClientConnInterface) TimeServiceClient {
+	return &timeServiceClient{cc}
+}
+
+func (c *timeServiceClient) Now(ctx context.Context, in *Nowrequest, opts ...grpc.CallOption) (*TimeUpdate, error) {
+	out := new(TimeUpdate)
+	err := c.cc.Invoke(ctx, "/TimeService/Now", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *timeServiceClient) Stream(ctx context.Context, in *TimeStreamRequest, opts ...grpc.CallOption) (TimeService_StreamClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_TimeService_serviceDesc.Streams[0], "/TimeService/Stream", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &timeServiceStreamClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type TimeService_StreamClient interface {
+	Recv() (*TimeUpdate, error)
+	grpc.ClientStream
+}
+
+type timeServiceStreamClient struct {
+	grpc.ClientStream
+}
+
+func (x *timeServiceStreamClient) Recv() (*TimeUpdate, error) {
+	m := new(TimeUpdate)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// TimeServiceServer is the server API for TimeService service.
+type TimeServiceServer interface {
+	Now(context.Context, *Nowrequest) (*TimeUpdate, error)
+	Stream(*TimeStreamRequest, TimeService_StreamServer) error
+}
+
+// UnimplementedTimeServiceServer can be embedded to have forward compatible implementations.
+type UnimplementedTimeServiceServer struct {
+}
+
+func (*UnimplementedTimeServiceServer) Now(ctx context.Context, req *Nowrequest) (*TimeUpdate, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Now not implemented")
+}
+func (*UnimplementedTimeServiceServer) Stream(req *TimeStreamRequest, srv TimeService_StreamServer) error {
+	return status.Errorf(codes.Unimplemented, "method Stream not implemented")
+}
+
+func RegisterTimeServiceServer(s *grpc.Server, srv TimeServiceServer) {
+	s.RegisterService(&_TimeService_serviceDesc, srv)
+}
+
+func _TimeService_Now_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Nowrequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TimeServiceServer).Now(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/TimeService/Now",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TimeServiceServer).Now(ctx, req.(*Nowrequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TimeService_Stream_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(TimeStreamRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TimeServiceServer).Stream(m, &timeServiceStreamServer{stream})
+}
+
+type TimeService_StreamServer interface {
+	Send(*TimeUpdate) error
+	grpc.ServerStream
+}
+
+type timeServiceStreamServer struct {
+	grpc.ServerStream
+}
+
+func (x *timeServiceStreamServer) Send(m *TimeUpdate) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+var _TimeService_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "TimeService",
+	HandlerType: (*TimeServiceServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Now",
+			Handler:    _TimeService_Now_Handler,
+		},
+	},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "Stream",
+			Handler:       _TimeService_Stream_Handler,
+			ServerStreams: true,
+		},
+	},
+	Metadata: "timeservice.proto",
 }
